@@ -1,0 +1,143 @@
+
+
+
+
+
+
+
+html,
+body {
+    background:
+        radial-gradient(circle at 18% 10%, rgba(241, 31, 53, 0.12) 0, rgba(241, 31, 53, 0) 42%),
+        radial-gradient(circle at 92% 94%, rgba(111, 211, 255, 0.09) 0, rgba(111, 211, 255, 0) 40%),
+        var(--bg-main) !important;
+}
+
+
+#loader-wrapper {
+    background: #06090f !important;
+}
+
+#loader {
+    border-top-color: var(--primary) !important;
+}
+
+#loader-text {
+    color: var(--primary) !important;
+}
+
+
+.card,
+.team-card,
+.player-section,
+.profile-card-section {
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(0, 0, 0, 0.08)),
+        var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow) !important;
+}
+
+
+.stat-progress>span {
+    background: linear-gradient(90deg, var(--primary), #ff6a7f) !important;
+}
+
+.stat-card.success .stat-progress>span {
+    background: linear-gradient(90deg, #25be8d, #4af2b7) !important;
+}
+
+.stat-card.warning .stat-progress>span {
+    background: linear-gradient(90deg, #ff9f2c, #ffd27b) !important;
+}
+
+
+.btn-primary,
+.button-primary,
+a.btn-primary,
+.bg-primary[class*="btn"] {
+    background: linear-gradient(135deg, var(--primary), var(--primary-2)) !important;
+    border-color: rgba(255, 101, 117, 0.58) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(241, 31, 53, 0.30) !important;
+}
+
+.btn-primary:hover,
+a.btn-primary:hover {
+    box-shadow: 0 8px 22px rgba(241, 31, 53, 0.46) !important;
+    transform: translateY(-2px) !important;
+    filter: brightness(1.08) !important;
+}
+
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none !important;
+    border-color: var(--primary-border) !important;
+    box-shadow: 0 0 0 3px rgba(241, 31, 53, 0.15) !important;
+}
+
+
+thead th {
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+tbody td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+tbody tr:hover {
+    background: rgba(255, 255, 255, 0.025);
+}
+
+
+.leader-item:nth-child(1) .leader-rank {
+    color: #FFD700;
+}
+
+.leader-item:nth-child(2) .leader-rank {
+    color: #C0C0C0;
+}
+
+.leader-item:nth-child(3) .leader-rank {
+    color: #CD7F32;
+}
+
+
+.nav-link.active {
+    background: linear-gradient(135deg, rgba(241, 31, 53, 0.26), rgba(241, 31, 53, 0.08)) !important;
+    border-color: rgba(241, 31, 53, 0.42) !important;
+    color: #ffffff !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 101, 117, 0.25), 0 8px 20px rgba(0, 0, 0, 0.28) !important;
+}
+
+.nav-link.active i {
+    color: #ff8a98 !important;
+}
+
+
+.quick-btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-2)) !important;
+    border-color: rgba(255, 101, 117, 0.50) !important;
+    box-shadow: 0 4px 14px rgba(241, 31, 53, 0.28) !important;
+}
+
+
+.footer {
+    color: var(--text-muted) !important;
+    border-top: 1px solid var(--border-color) !important;
+}
+
+
+@media (max-width: 1280px) {
+    .main-container {
+        grid-template-columns: 1fr !important;
+    }
+}

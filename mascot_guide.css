@@ -1,0 +1,160 @@
+
+.mascot-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.mascot-bubble {
+    background: rgba(8, 8, 8, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(229, 25, 30, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    color: #ffffff;
+    max-width: 320px;
+    margin-bottom: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(229, 25, 30, 0.2);
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+    position: relative;
+    transform-origin: bottom right;
+}
+
+.mascot-bubble.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.mascot-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    right: 25px;
+    border-width: 10px 10px 0;
+    border-style: solid;
+    border-color: rgba(8, 8, 8, 0.85) transparent transparent transparent;
+    display: block;
+    width: 0;
+}
+
+.mascot-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -11px;
+    right: 24px;
+    border-width: 11px 11px 0;
+    border-style: solid;
+    border-color: rgba(229, 25, 30, 0.3) transparent transparent transparent;
+    display: block;
+    width: 0;
+    z-index: -1;
+}
+
+.mascot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 8px;
+}
+
+.mascot-title {
+    font-weight: 700;
+    color: #e5191e;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mascot-close {
+    cursor: pointer;
+    color: #a0a0a0;
+    font-size: 1.2rem;
+    transition: color 0.2s;
+    background: none;
+    border: none;
+    outline: none;
+}
+
+.mascot-close:hover {
+    color: #ffffff;
+}
+
+.mascot-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.mascot-steps li {
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    line-height: 1.5;
+    position: relative;
+    padding-left: 24px;
+    color: #e2e8f0;
+}
+
+.mascot-steps li:last-child {
+    margin-bottom: 0;
+}
+
+.mascot-steps li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: #e5191e;
+    font-weight: bold;
+}
+
+.mascot-avatar-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e5191e 0%, #8b0c10 100%);
+    border: 3px solid #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(229, 25, 30, 0.4);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+    user-select: none;
+}
+
+.mascot-avatar-btn:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 6px 20px rgba(229, 25, 30, 0.6);
+}
+
+.mascot-avatar-btn.active {
+    transform: scale(0.95);
+}
+
+.mascot-pulse {
+    animation: mascotPulse 2s infinite;
+}
+
+@keyframes mascotPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(229, 25, 30, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 15px rgba(229, 25, 30, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(229, 25, 30, 0);
+    }
+}

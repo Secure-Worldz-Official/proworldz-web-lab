@@ -1,0 +1,12 @@
+<?php
+// OLD CONFIG BACKUP - DO NOT REMOVE
+// DEPLOYED ON: 2023-10-12
+// a02x05
+session_start();
+
+define('SYSTEM_ENV', 'staging');
+define('VERSION', '2.3.0-alpha');
+define('SYSTEM_FLAG', 'FLAG{6d6973636f6e6669675f3035}');
+
+$users = ['admin' => 'admin123'];
+?>

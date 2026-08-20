@@ -1,0 +1,76 @@
+.desktop-sidebar .profile-card-section {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.desktop-sidebar {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--gap, 1.5rem) !important;
+}
+
+.desktop-sidebar .nav-section {
+    margin-bottom: 1.5rem !important;
+}
+
+.desktop-container .desktop-sidebar .nav-section .nav-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    padding: 0.75rem !important;
+    border-radius: calc(var(--radius, 0.625rem) - 2px) !important;
+    text-decoration: none !important;
+    color: var(--sidebar-foreground, #f8fafc) !important;
+    transition: all 0.2s !important;
+    margin-bottom: 0.25rem !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    opacity: 1 !important;
+    transition: none !important;
+}
+
+.desktop-container .desktop-sidebar .nav-section .nav-item:hover,
+.desktop-container .desktop-sidebar .nav-section .nav-item:hover:not(.active),
+.desktop-container .desktop-sidebar .nav-section .nav-item.disabled:hover {
+    background-color: transparent !important;
+    color: var(--sidebar-foreground, #f8fafc) !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+}
+
+.desktop-container .desktop-sidebar .nav-section .nav-item.active {
+    background-color: transparent !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+}
+
+.desktop-container .desktop-sidebar .nav-section .nav-item.disabled {
+    opacity: 1 !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    color: var(--sidebar-foreground, #f8fafc) !important;
+    border: none !important;
+    background-color: transparent !important;
+}
+
+.desktop-sidebar .nav-icon {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    flex-shrink: 0 !important;
+}
+
+.desktop-sidebar .nav-label {
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    text-transform: uppercase !important;
+}
