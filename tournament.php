@@ -1,6 +1,13 @@
 <?php
 require_once 'api/auth_check.php';
 
+// The legacy "Total" Tournament view is no longer exposed. Keep Tournament itself available.
+$legacyTournamentView = strtolower((string) ($_GET['view'] ?? $_GET['tab'] ?? ''));
+if ($legacyTournamentView === 'total') {
+    header('Location: dashboard.php', true, 302);
+    exit();
+}
+
 $eagleCoins = $userCoins;
 
 
@@ -74,6 +81,7 @@ $battles = $db->getBattlesForUser($userId) ?: [];
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="api/includes/loading_resilience.js?v=20260822" defer></script>
 <script src="api/includes/presence_realtime.js?v=20260320c" defer></script>
 <style>
         /* Dashboard Theme & Resets */
@@ -404,7 +412,7 @@ $battles = $db->getBattlesForUser($userId) ?: [];
                                 <div class="vs-container">
                                     <div class="participant" style="position:relative;">
                                         <div style="position:relative; display:inline-block;">
-                                            <img src="api/get_avatar_img.php?id=<?php echo $b['challenger_id']; ?>" onerror="this.src='image.png'" style="margin-bottom:0;"> 
+                                            <img src="api/get_avatar_img.php?id=<?php echo $b['challenger_id']; ?>" onerror="this.src='image.webp'" style="margin-bottom:0;"> 
                                             <div
                                                 data-online-dot
                                                 data-user-id="<?php echo (int)$b['challenger_id']; ?>"
@@ -416,7 +424,7 @@ $battles = $db->getBattlesForUser($userId) ?: [];
                                     <div class="vs-divider">VS</div>
                                     <div class="participant" style="position:relative;">
                                         <div style="position:relative; display:inline-block;">
-                                            <img src="api/get_avatar_img.php?id=<?php echo $b['challenged_id']; ?>" onerror="this.src='image.png'" style="margin-bottom:0;"> 
+                                            <img src="api/get_avatar_img.php?id=<?php echo $b['challenged_id']; ?>" onerror="this.src='image.webp'" style="margin-bottom:0;"> 
                                             <div
                                                 data-online-dot
                                                 data-user-id="<?php echo (int)$b['challenged_id']; ?>"

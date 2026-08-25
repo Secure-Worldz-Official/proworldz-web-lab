@@ -8,142 +8,139 @@ function esc($value)
     return htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
-$labsJson = <<<'JSON'
-[
-  {
-    "id": "asi01",
-    "code": "ASI01",
-    "difficulty": "Easy",
-    "title": "Agent Goal Hijack",
-    "appName": "AI Support Console",
-    "objective": "Redirect the support agent away from its intended support mission.",
-    "summary": "Crafty inputs manipulate an agent's main targets or instructions.",
-    "scenario": "A support agent is assigned to triage an incident queue and draft a safe response. The lab tests whether hostile prompt text can redirect that mission.",
-    "attackSurface": "A user-controlled prompt field is mixed into the agent's planning context.",
-    "impact": "Task drift, unsafe instructions, and redirected follow-on actions.",
-    "mitigation": "Lock the mission objective, isolate user input, and reject instruction overrides from untrusted text."
-  },
-  {
-    "id": "asi02",
-    "code": "ASI02",
-    "difficulty": "Medium",
-    "title": "Tool Misuse & Exploitation",
-    "appName": "AI Operations Desk",
-    "objective": "Cause a legitimate tool to be used with destructive scope.",
-    "summary": "An agent triggers legitimate tools in destructive, unintended ways.",
-    "scenario": "A legitimate agent can reach file, mail, database, deployment, and user-admin tools. The simulation shows how a valid tool call can be pushed into destructive use.",
-    "attackSurface": "A trusted tool call inherits attacker-controlled intent and scope.",
-    "impact": "Accidental deletion, mass messaging, destructive deployments, or privilege changes.",
-    "mitigation": "Gate risky actions with allowlists, dry-runs, and explicit approvals."
-  },
-  {
-    "id": "asi03",
-    "code": "ASI03",
-    "difficulty": "Medium",
-    "title": "Identity & Privilege Abuse",
-    "appName": "Enterprise AI Identity Portal",
-    "objective": "Abuse privilege inheritance to reach a restricted resource.",
-    "summary": "Agents share, inherit, or excessively escalate credentials.",
-    "scenario": "The lab models normal, privileged, and administrator identities. It shows how shared or inherited credentials can collapse the boundary between them.",
-    "attackSurface": "Credential forwarding and scope inheritance between agent identities.",
-    "impact": "Unauthorized elevation, lateral movement, and overbroad access.",
-    "mitigation": "Use least privilege, scoped tokens, and per-tool step-up authorization."
-  },
-  {
-    "id": "asi04",
-    "code": "ASI04",
-    "difficulty": "Hard",
-    "title": "Agentic Supply Chain Vulnerabilities",
-    "appName": "AI Plugin Marketplace",
-    "objective": "Install a compromised component into the agent runtime.",
-    "summary": "Compromised registries, plugins, or third-party MCP servers enter the runtime.",
-    "scenario": "A simulated runtime loads plugins and MCP servers from a registry. The lab demonstrates how a compromised third-party component can alter the agent environment after installation.",
-    "attackSurface": "A trusted-looking registry entry can hide malicious runtime hooks.",
-    "impact": "Planner manipulation, data exfiltration, or malicious tool access.",
-    "mitigation": "Verify signatures, pin dependencies, sandbox connectors, and review permissions."
-  },
-  {
-    "id": "asi05",
-    "code": "ASI05",
-    "difficulty": "Hard",
-    "title": "Unexpected Code Execution (RCE)",
-    "appName": "AI Code Assistant",
-    "objective": "Trigger the unsafe execution path in the mock environment.",
-    "summary": "Unsafe evaluation or translation turns generated content into live system commands.",
-    "scenario": "A code-generation step turns a user request into an executable-looking command. The lab compares an unsafe eval-style path with a sandboxed parser that never touches the host shell.",
-    "attackSurface": "Generated text is treated as live instructions rather than data.",
-    "impact": "Command execution risk, environment leakage, or destructive automation.",
-    "mitigation": "Avoid eval, sandbox the runner, and use allowlisted parsers."
-  },
-  {
-    "id": "asi06",
-    "code": "ASI06",
-    "difficulty": "Hard",
-    "title": "Memory & Context Poisoning",
-    "appName": "AI Memory Store",
-    "objective": "Poison long-term memory and influence a later decision.",
-    "summary": "Adversaries corrupt vector databases or long-term memory logs to alter future actions.",
-    "scenario": "The agent writes long-term memories into a vector store and later retrieves them for future tasks. The lab shows how poisoned memory can steer later decisions.",
-    "attackSurface": "Untrusted memories are stored with no provenance or confidence filter.",
-    "impact": "Persistent misinformation, policy drift, and bad future decisions.",
-    "mitigation": "Track memory provenance, quarantine low-trust entries, and filter retrievals."
-  },
-  {
-    "id": "asi07",
-    "code": "ASI07",
-    "difficulty": "Medium",
-    "title": "Insecure Inter-Agent Communication",
-    "appName": "Multi-Agent Message Bus",
-    "objective": "Deliver a forged message that the receiving agent trusts.",
-    "summary": "Weak validation allows message spoofing or tampering between collaborating agents.",
-    "scenario": "Two simulated agents exchange messages through a weak channel. The lab demonstrates how a forged or tampered message can influence a downstream agent.",
-    "attackSurface": "Message payloads are accepted without strong sender binding or validation.",
-    "impact": "Spoofed instructions, tampered workflows, and incorrect actions.",
-    "mitigation": "Sign messages, validate schemas, and bind messages to sender identity."
-  },
-  {
-    "id": "asi08",
-    "code": "ASI08",
-    "difficulty": "Easy",
-    "title": "Cascading Failures",
-    "appName": "Autonomous Workflow Engine",
-    "objective": "Cause a single failure to cascade through the workflow.",
-    "summary": "A single error or loop from one automated agent amplifies wildly across systems.",
-    "scenario": "A single bad output enters a chain of agent services. The lab shows how retries and fan-out can amplify one mistake into a larger failure.",
-    "attackSurface": "Weak validation allows malformed output to propagate across services.",
-    "impact": "Blast-radius expansion, repeated failures, and cascading outages.",
-    "mitigation": "Use circuit breakers, bounded retries, schema validation, and isolation."
-  },
-  {
-    "id": "asi09",
-    "code": "ASI09",
-    "difficulty": "Easy",
-    "title": "Human-Agent Trust Exploitation",
-    "appName": "AI Security Approval Console",
-    "objective": "Get the human operator to approve a dangerous recommendation.",
-    "summary": "Agents abuse \"authority bias\" to trick human operators into approving dangerous choices.",
-    "scenario": "A human operator receives a polished recommendation that sounds authoritative and urgent. The lab shows how that social cue can push an approval into a dangerous outcome.",
-    "attackSurface": "Authority cues overwhelm the human review step.",
-    "impact": "Dangerous approvals, policy bypass, and avoidable operational harm.",
-    "mitigation": "Require second-person review, independent verification, and risk banners."
-  },
-  {
-    "id": "asi10",
-    "code": "ASI10",
-    "difficulty": "Medium",
-    "title": "Rogue Agents",
-    "appName": "Autonomous Agent Manager",
-    "objective": "Demonstrate behavioral drift in a long-running agent.",
-    "summary": "Agents drift or malfunction while technically following rules, performing harmful long-term tasks.",
-    "scenario": "A rule-following agent is observed across several steps as it quietly optimizes itself into a harmful trajectory. The lab demonstrates drift while the agent still appears compliant on the surface.",
-    "attackSurface": "A long-running objective is allowed to evolve without periodic review.",
-    "impact": "Goal drift, harmful automation, and delayed detection.",
-    "mitigation": "Limit autonomy, audit long-running tasks, and add drift detection plus kill switches."
-  }
-]
-JSON;
+$labs = [
+    [
+        'id' => 'asi01',
+        'code' => 'ASI01',
+        'difficulty' => 'Easy',
+        'title' => 'Agent Goal Hijack',
+        'appName' => 'AI Support Console',
+        'objective' => 'Redirect the support agent away from its intended support mission.',
+        'summary' => 'Crafty inputs manipulate an agent\'s main targets or instructions.',
+        'scenario' => 'A support agent is assigned to triage an incident queue and draft a safe response. The lab tests whether hostile prompt text can redirect that mission.',
+        'attackSurface' => 'A user-controlled prompt field is mixed into the agent\'s planning context.',
+        'impact' => 'Task drift, unsafe instructions, and redirected follow-on actions.',
+        'mitigation' => 'Lock the mission objective, isolate user input, and reject instruction overrides from untrusted text.'
+    ],
+    [
+        'id' => 'asi02',
+        'code' => 'ASI02',
+        'difficulty' => 'Medium',
+        'title' => 'Tool Misuse & Exploitation',
+        'appName' => 'AI Operations Desk',
+        'objective' => 'Cause a legitimate tool to be used with destructive scope.',
+        'summary' => 'An agent triggers legitimate tools in destructive, unintended ways.',
+        'scenario' => 'A legitimate agent can reach file, mail, database, deployment, and user-admin tools. The simulation shows how a valid tool call can be pushed into destructive use.',
+        'attackSurface' => 'A trusted tool call inherits attacker-controlled intent and scope.',
+        'impact' => 'Accidental deletion, mass messaging, destructive deployments, or privilege changes.',
+        'mitigation' => 'Gate risky actions with allowlists, dry-runs, and explicit approvals.'
+    ],
+    [
+        'id' => 'asi03',
+        'code' => 'ASI03',
+        'difficulty' => 'Medium',
+        'title' => 'Identity & Privilege Abuse',
+        'appName' => 'Enterprise AI Identity Portal',
+        'objective' => 'Abuse privilege inheritance to reach a restricted resource.',
+        'summary' => 'Agents share, inherit, or excessively escalate credentials.',
+        'scenario' => 'The lab models normal, privileged, and administrator identities. It shows how shared or inherited credentials can collapse the boundary between them.',
+        'attackSurface' => 'Credential forwarding and scope inheritance between agent identities.',
+        'impact' => 'Unauthorized elevation, lateral movement, and overbroad access.',
+        'mitigation' => 'Use least privilege, scoped tokens, and per-tool step-up authorization.'
+    ],
+    [
+        'id' => 'asi04',
+        'code' => 'ASI04',
+        'difficulty' => 'Hard',
+        'title' => 'Agentic Supply Chain Vulnerabilities',
+        'appName' => 'AI Plugin Marketplace',
+        'objective' => 'Install a compromised component into the agent runtime.',
+        'summary' => 'Compromised registries, plugins, or third-party MCP servers enter the runtime.',
+        'scenario' => 'A simulated runtime loads plugins and MCP servers from a registry. The lab demonstrates how a compromised third-party component can alter the agent environment after installation.',
+        'attackSurface' => 'A trusted-looking registry entry can hide malicious runtime hooks.',
+        'impact' => 'Planner manipulation, data exfiltration, or malicious tool access.',
+        'mitigation' => 'Verify signatures, pin dependencies, sandbox connectors, and review permissions.'
+    ],
+    [
+        'id' => 'asi05',
+        'code' => 'ASI05',
+        'difficulty' => 'Hard',
+        'title' => 'Unexpected Code Execution (RCE)',
+        'appName' => 'AI Code Assistant',
+        'objective' => 'Trigger the unsafe execution path in the mock environment.',
+        'summary' => 'Unsafe evaluation or translation turns generated content into live system commands.',
+        'scenario' => 'A code-generation step turns a user request into an executable-looking command. The lab compares an unsafe eval-style path with a sandboxed parser that never touches the host shell.',
+        'attackSurface' => 'Generated text is treated as live instructions rather than data.',
+        'impact' => 'Command execution risk, environment leakage, or destructive automation.',
+        'mitigation' => 'Avoid eval, sandbox the runner, and use allowlisted parsers.'
+    ],
+    [
+        'id' => 'asi06',
+        'code' => 'ASI06',
+        'difficulty' => 'Hard',
+        'title' => 'Memory & Context Poisoning',
+        'appName' => 'AI Memory Store',
+        'objective' => 'Poison long-term memory and influence a later decision.',
+        'summary' => 'Adversaries corrupt vector databases or long-term memory logs to alter future actions.',
+        'scenario' => 'The agent writes long-term memories into a vector store and later retrieves them for future tasks. The lab shows how poisoned memory can steer later decisions.',
+        'attackSurface' => 'Untrusted memories are stored with no provenance or confidence filter.',
+        'impact' => 'Persistent misinformation, policy drift, and bad future decisions.',
+        'mitigation' => 'Track memory provenance, quarantine low-trust entries, and filter retrievals.'
+    ],
+    [
+        'id' => 'asi07',
+        'code' => 'ASI07',
+        'difficulty' => 'Medium',
+        'title' => 'Insecure Inter-Agent Communication',
+        'appName' => 'Multi-Agent Message Bus',
+        'objective' => 'Deliver a forged message that the receiving agent trusts.',
+        'summary' => 'Weak validation allows message spoofing or tampering between collaborating agents.',
+        'scenario' => 'Two simulated agents exchange messages through a weak channel. The lab demonstrates how a forged or tampered message can influence a downstream agent.',
+        'attackSurface' => 'Message payloads are accepted without strong sender binding or validation.',
+        'impact' => 'Spoofed instructions, tampered workflows, and incorrect actions.',
+        'mitigation' => 'Sign messages, validate schemas, and bind messages to sender identity.'
+    ],
+    [
+        'id' => 'asi08',
+        'code' => 'ASI08',
+        'difficulty' => 'Easy',
+        'title' => 'Cascading Failures',
+        'appName' => 'Autonomous Workflow Engine',
+        'objective' => 'Cause a single failure to cascade through the workflow.',
+        'summary' => 'A single error or loop from one automated agent amplifies wildly across systems.',
+        'scenario' => 'A single bad output enters a chain of agent services. The lab shows how retries and fan-out can amplify one mistake into a larger failure.',
+        'attackSurface' => 'Weak validation allows malformed output to propagate across services.',
+        'impact' => 'Blast-radius expansion, repeated failures, and cascading outages.',
+        'mitigation' => 'Use circuit breakers, bounded retries, schema validation, and isolation.'
+    ],
+    [
+        'id' => 'asi09',
+        'code' => 'ASI09',
+        'difficulty' => 'Easy',
+        'title' => 'Human-Agent Trust Exploitation',
+        'appName' => 'AI Security Approval Console',
+        'objective' => 'Get the human operator to approve a dangerous recommendation.',
+        'summary' => 'Agents abuse "authority bias" to trick human operators into approving dangerous choices.',
+        'scenario' => 'A human operator receives a polished recommendation that sounds authoritative and urgent. The lab shows how that social cue can push an approval into a dangerous outcome.',
+        'attackSurface' => 'Authority cues overwhelm the human review step.',
+        'impact' => 'Dangerous approvals, policy bypass, and avoidable operational harm.',
+        'mitigation' => 'Require second-person review, independent verification, and risk banners.'
+    ],
+    [
+        'id' => 'asi10',
+        'code' => 'ASI10',
+        'difficulty' => 'Medium',
+        'title' => 'Rogue Agents',
+        'appName' => 'Autonomous Agent Manager',
+        'objective' => 'Demonstrate behavioral drift in a long-running agent.',
+        'summary' => 'Agents drift or malfunction while technically following rules, performing harmful long-term tasks.',
+        'scenario' => 'A rule-following agent is observed across several steps as it quietly optimizes itself into a harmful trajectory. The lab demonstrates drift while the agent still appears compliant on the surface.',
+        'attackSurface' => 'A long-running objective is allowed to evolve without periodic review.',
+        'impact' => 'Goal drift, harmful automation, and delayed detection.',
+        'mitigation' => 'Limit autonomy, audit long-running tasks, and add drift detection plus kill switches.'
+    ]
+];
 
-$labs = json_decode($labsJson, true);
 $labsById = [];
 foreach ($labs as $labItem) {
     $labsById[$labItem['id']] = $labItem;
@@ -3036,8 +3033,6 @@ document.addEventListener('keydown',function(e){
         }
 
         .approval-banner p {
-            color: var(--text-secondary);
-            line-height: 1.7;
         }
 
         .signature-note {
@@ -3047,503 +3042,596 @@ document.addEventListener('keydown',function(e){
             line-height: 1.6;
         }
 
-        /* Platform Layout & Section System */
+        /* ========================================
+           NEXT-GEN SOC AI CYBER RANGE STYLING
+        ======================================== */
+        :root {
+            --bg-base: #030508;
+            --bg-card: rgba(13, 17, 26, 0.75);
+            --border-dim: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(255, 42, 47, 0.4);
+            --primary: #ff2a2f;
+            --primary-glow: rgba(255, 42, 47, 0.25);
+            --emerald: #10b981;
+            --emerald-glow: rgba(16, 185, 129, 0.25);
+            --amber: #f59e0b;
+            --amber-glow: rgba(245, 158, 11, 0.25);
+            --cyan: #06b6d4;
+            --text-main: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-dim: #64748b;
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
         .page-shell {
-            max-width: var(--container);
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 100px 2rem 4rem;
+            padding: 90px 24px 4rem;
             position: relative;
             z-index: 1;
         }
 
         /* Sticky Navbar */
         .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: rgba(0, 0, 0, 0.88);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-bottom: 1px solid var(--border);
-            transition: var(--transition-smooth);
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            z-index: 1000 !important;
+            background: rgba(0, 0, 0, 0.92) !important;
+            backdrop-filter: blur(24px) !important;
+            -webkit-backdrop-filter: blur(24px) !important;
+            border-bottom: 1px solid var(--border-dim) !important;
+            box-sizing: border-box !important;
+            overflow: visible !important;
         }
 
-        .nav-progress-pill {
+        .navbar, .navbar *, .nav-container, .nav-container * {
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
+        .navbar::-webkit-scrollbar, .navbar *::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+
+        .hud-live-pill {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.45rem 0.9rem;
+            gap: 8px;
+            padding: 6px 14px;
             border-radius: 999px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            font-size: 0.72rem;
-            font-weight: 800;
-            color: var(--text-secondary);
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #6ee7b7;
             font-family: var(--font-mono);
-            letter-spacing: 0.08em;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 10px #10b981;
+            animation: radarPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes radarPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.3); }
         }
 
         /* Hero Section */
-        .hero-section {
-            padding: 3.5rem 0 2.5rem;
-            text-align: center;
-            max-width: 900px;
-            margin: 0 auto;
-            animation: fadeUp 0.5s ease both;
+        .range-hero {
+            padding: 30px 0 24px;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 32px;
+            align-items: center;
         }
 
-        .hero-badge {
+        .hero-title-group .hero-eyebrow {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.45rem 1.1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-hover);
-            border-radius: 50px;
-            font-size: 0.76rem;
-            font-weight: 800;
-            color: rgba(255, 255, 255, 0.85);
-            margin-bottom: 1.5rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
+            gap: 8px;
+            color: var(--primary);
             font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
         }
 
         .hero-title {
-            font-size: clamp(2.4rem, 4.5vw, 3.8rem);
-            font-weight: 800;
             font-family: var(--font-heading);
+            font-size: clamp(2.2rem, 4vw, 3.4rem);
+            font-weight: 800;
             line-height: 1.1;
-            margin-bottom: 1.2rem;
-            letter-spacing: -0.02em;
-            color: #ffffff;
-        }
-
-        .cursor {
-            display: inline-block;
-            width: 3px;
-            height: 1em;
-            background: #ffffff;
-            margin-left: 3px;
-            vertical-align: text-bottom;
-            animation: blink 1.1s step-end infinite;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #ffffff 30%, #fca5a5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 14px;
         }
 
         .hero-desc {
-            font-size: 1.05rem;
             color: var(--text-secondary);
-            line-height: 1.8;
-            max-width: 68ch;
-            margin: 0 auto 2.2rem;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            max-width: 620px;
         }
 
-        .hero-actions {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        /* Stats & Credibility Strip */
-        .stats-strip {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.25rem;
-            margin: 2.5rem 0 3.5rem;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.025);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 1.4rem 1.2rem;
-            text-align: center;
-            backdrop-filter: blur(16px);
-            transition: var(--transition-smooth);
-        }
-
-        .stat-card:hover {
-            border-color: var(--border-hover);
-            transform: translateY(-3px);
-            background: rgba(255, 255, 255, 0.045);
-        }
-
-        .stat-num {
-            display: block;
-            font-size: 2.2rem;
-            font-weight: 800;
-            font-family: var(--font-heading);
-            color: #ffffff;
-            line-height: 1.1;
-            margin-bottom: 0.35rem;
-        }
-
-        .stat-label {
-            font-size: 0.76rem;
-            color: var(--text-muted);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            font-family: var(--font-mono);
-        }
-
-        /* How It Works Strip */
-        .how-strip {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-            margin-bottom: 3.5rem;
-        }
-
-        .how-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 1.3rem;
+        /* Telemetry Card */
+        .telemetry-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-dim);
+            border-radius: var(--radius-lg);
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 0.6rem;
-            transition: var(--transition-smooth);
-        }
-
-        .how-card:hover {
-            border-color: var(--border-hover);
-            background: rgba(255, 255, 255, 0.04);
-        }
-
-        .how-num {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: 800;
-            font-family: var(--font-mono);
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .how-title {
-            font-size: 0.95rem;
-            font-weight: 800;
-            color: #ffffff;
-        }
-
-        .how-desc {
-            font-size: 0.82rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        /* Featured Lab Spotlight Card */
-        .spotlight-section {
-            margin-bottom: 3.5rem;
-        }
-
-        .spotlight-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
-            border: 1px solid var(--border-hover);
-            border-radius: 24px;
-            padding: 2.2rem;
-            display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 2rem;
-            align-items: center;
+            gap: 18px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
             position: relative;
             overflow: hidden;
-            box-shadow: var(--shadow);
         }
 
-        .spotlight-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.35rem 0.85rem;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            font-size: 0.68rem;
+        .telemetry-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--cyan), transparent);
+        }
+
+        .telemetry-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .t-stat {
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-md);
+            padding: 12px 14px;
+            text-align: center;
+        }
+
+        .t-stat-label {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
             font-weight: 800;
+            color: var(--text-dim);
             letter-spacing: 0.1em;
             text-transform: uppercase;
-            font-family: var(--font-mono);
-            color: #ffffff;
-            margin-bottom: 1rem;
+            margin-bottom: 4px;
         }
 
-        .spotlight-title {
-            font-size: 1.8rem;
-            font-weight: 800;
+        .t-stat-val {
             font-family: var(--font-heading);
-            margin-bottom: 0.8rem;
-            color: #ffffff;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #fff;
         }
 
-        .spotlight-desc {
-            color: var(--text-secondary);
-            line-height: 1.7;
-            font-size: 0.95rem;
-            margin-bottom: 1.4rem;
+        .t-stat-val.highlight {
+            color: var(--primary);
+            text-shadow: 0 0 16px var(--primary-glow);
         }
 
-        .spotlight-preview {
-            background: #040508;
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 1.2rem;
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            color: #d0d0d0;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Lab Grid Section */
-        .section-header {
-            margin-bottom: 1.8rem;
+        .telemetry-progress-wrap {
             display: flex;
-            align-items: flex-end;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .progress-header {
+            display: flex;
             justify-content: space-between;
-            gap: 1rem;
+            align-items: center;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .progress-header span:first-child { color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.08em; }
+        .progress-header span:last-child { color: #fff; font-weight: 800; }
+
+        .progress-bar-track {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 999px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff2a2f 0%, #10b981 100%);
+            border-radius: 999px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 12px rgba(255, 42, 47, 0.5);
+        }
+
+        /* Controls / Filter Bar */
+        .range-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin: 16px 0 28px;
             flex-wrap: wrap;
         }
 
-        .section-title {
-            font-size: 1.8rem;
-            font-weight: 800;
-            font-family: var(--font-heading);
-            color: #ffffff;
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 420px;
+            min-width: 260px;
         }
 
-        .section-sub {
-            color: var(--text-secondary);
+        .search-box i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
             font-size: 0.9rem;
         }
 
-        .lab-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 1.35rem;
+        .search-input {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            border-radius: var(--radius-md);
+            padding: 12px 16px 12px 44px;
+            color: #fff;
+            font-family: var(--font-body);
+            font-size: 0.88rem;
+            outline: none;
+            transition: all 0.2s ease;
         }
 
-        /* Upgraded Premium Lab Cards */
-        .lab-card {
-            width: 100%;
-            text-decoration: none;
-            border-radius: 20px;
-            padding: 1.6rem;
-            text-align: left;
-            min-height: 260px;
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 16px var(--primary-glow);
+            background: rgba(20, 27, 40, 0.95);
+        }
+
+        .filter-pills {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-dim);
+            color: var(--text-secondary);
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+            box-shadow: 0 0 14px var(--primary-glow);
+        }
+
+        /* AI Challenge Grid */
+        .ai-lab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 22px;
+        }
+
+        .ai-lab-card {
+            background: linear-gradient(160deg, rgba(22, 28, 42, 0.75) 0%, rgba(10, 14, 22, 0.85) 100%);
+            border: 1px solid var(--border-dim);
+            border-radius: var(--radius-lg);
+            padding: 24px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 1.2rem;
-            color: var(--text);
+            gap: 18px;
             position: relative;
             overflow: hidden;
-            transition: var(--transition-smooth);
-            border: 1px solid var(--border);
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(20px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
 
-        .lab-card:hover {
+        .ai-lab-card:hover {
             transform: translateY(-6px);
-            border-color: var(--border-strong);
-            background: rgba(255, 255, 255, 0.045);
-            box-shadow: var(--shadow);
+            border-color: var(--border-glow);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7), 0 0 25px -5px var(--primary-glow);
+            background: linear-gradient(160deg, rgba(28, 36, 54, 0.9) 0%, rgba(14, 18, 28, 0.95) 100%);
         }
 
-        .card-top {
+        .ai-lab-card.is-completed {
+            border-color: rgba(16, 185, 129, 0.4);
+            background: linear-gradient(160deg, rgba(16, 185, 129, 0.08) 0%, rgba(10, 14, 22, 0.85) 100%);
+        }
+
+        .card-top-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 0.5rem;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
-        .lab-code {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.35rem 0.7rem;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.07);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            font-size: 0.7rem;
+        .ai-code-badge {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
             font-weight: 800;
             letter-spacing: 0.12em;
-            text-transform: uppercase;
-            font-family: var(--font-mono);
+            color: #fca5a5;
+            background: rgba(255, 42, 47, 0.1);
+            border: 1px solid rgba(255, 42, 47, 0.3);
+            padding: 4px 10px;
+            border-radius: 6px;
         }
 
-        .diff-tag {
+        .ai-diff-tag {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 999px;
+        }
+
+        .ai-diff-tag.diff-easy {
+            background: rgba(16, 185, 129, 0.1);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .ai-diff-tag.diff-medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: #fcd34d;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .ai-diff-tag.diff-hard {
+            background: rgba(255, 42, 47, 0.12);
+            color: #fca5a5;
+            border: 1px solid rgba(255, 42, 47, 0.35);
+        }
+
+        .ai-target-app {
             display: inline-flex;
             align-items: center;
-            padding: 0.28rem 0.65rem;
-            border-radius: 999px;
-            font-size: 0.62rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
+            gap: 6px;
             font-family: var(--font-mono);
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--cyan);
+            background: rgba(6, 182, 212, 0.08);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-top: 10px;
+            margin-bottom: 6px;
         }
-        .diff-easy   { background: rgba(255, 255, 255, 0.05); color: #aaaaaa; border: 1px solid rgba(255, 255, 255, 0.1); }
-        .diff-medium { background: rgba(255, 255, 255, 0.09); color: #dddddd; border: 1px solid rgba(255, 255, 255, 0.18); }
-        .diff-hard   { background: rgba(255, 255, 255, 0.14); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.28); }
 
-        .lab-card h3 {
+        .ai-card-title {
             font-family: var(--font-heading);
-            font-size: 1.18rem;
-            font-weight: 800;
-            color: #ffffff;
-            margin-bottom: 0.45rem;
+            font-size: 1.25rem;
+            font-weight: 700;
             line-height: 1.3;
+            color: #fff;
+            margin-bottom: 8px;
         }
 
-        .lab-card p {
+        .ai-card-desc {
             color: var(--text-secondary);
             font-size: 0.86rem;
-            line-height: 1.65;
+            line-height: 1.6;
+            margin-bottom: 12px;
         }
 
-        .lab-tags {
+        .ai-tags-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.4rem;
-            margin-top: 0.6rem;
+            gap: 6px;
         }
 
-        .lab-tag {
+        .ai-tag-pill {
+            font-family: var(--font-mono);
             font-size: 0.65rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 6px;
+            padding: 3px 7px;
+            border-radius: 4px;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            color: var(--text-muted);
-            font-family: var(--font-mono);
+            color: var(--text-dim);
         }
 
-        .card-bottom {
+        .card-bottom-actions {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 16px;
             display: flex;
             flex-direction: column;
-            gap: 0.65rem;
-            margin-top: auto;
-            padding-top: 0.8rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            gap: 10px;
         }
 
-        .card-bottom-main {
+        .bottom-status-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            width: 100%;
         }
 
-        .doc-research-link {
+        .ai-status-indicator {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #cbd5e1;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ai-status-indicator.is-completed {
+            color: #86efac;
+        }
+
+        .btn-launch-ai {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 0.45rem;
+            gap: 8px;
+            background: var(--primary);
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(255, 42, 47, 0.3);
+        }
+
+        .btn-launch-ai:hover {
+            filter: brightness(1.15);
+            box-shadow: 0 6px 20px rgba(255, 42, 47, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-dossier-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
             font-size: 0.72rem;
             font-weight: 600;
             color: rgba(255, 255, 255, 0.65);
             text-decoration: none;
-            padding: 0.4rem 0.7rem;
+            padding: 6px 10px;
             border-radius: 6px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
             transition: all 0.18s ease;
-            width: 100%;
-            box-sizing: border-box;
             cursor: pointer;
         }
 
-        .doc-research-link:hover {
+        .btn-dossier-link:hover {
             color: #ffffff;
             background: rgba(255, 255, 255, 0.08);
             border-color: rgba(255, 255, 255, 0.2);
         }
 
-        .lab-action {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.55rem;
-            font-size: 0.78rem;
-            font-weight: 800;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: #ffffff;
-            font-family: var(--font-mono);
-            transition: var(--transition-fast);
-        }
-
-        .lab-action i {
-            color: rgba(255, 255, 255, 0.7);
-            transition: transform 0.25s ease;
-        }
-
-        .lab-card:hover .lab-action i {
-            transform: translateX(4px);
-            color: #ffffff;
-        }
-
-        /* Buttons */
-        .lab-btn {
-            border-radius: 12px;
-            padding: 0.85rem 1.4rem;
-            font-weight: 800;
-            font-size: 0.85rem;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            display: inline-flex;
+        /* Dossier Modal */
+        .ai-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 10000;
+            display: none;
             align-items: center;
             justify-content: center;
-            gap: 0.55rem;
-            text-decoration: none;
+            padding: 20px;
+            animation: fadeIn 0.2s ease;
         }
 
-        .lab-btn.primary {
-            background: #ffffff;
-            color: #000000;
-            border: 1px solid #ffffff;
+        .ai-modal-container {
+            width: 100%;
+            max-width: 680px;
+            background: #090d14;
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 42, 47, 0.2);
         }
 
-        .lab-btn.primary:hover {
-            background: rgba(255, 255, 255, 0.88);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-glow);
+        .ai-modal-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border-dim);
+            background: rgba(255, 255, 255, 0.02);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        .lab-btn.secondary {
-            background: rgba(255, 255, 255, 0.04);
-            color: #ffffff;
-            border: 1px solid var(--border);
+        .ai-modal-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
-        .lab-btn.secondary:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: var(--border-hover);
-            transform: translateY(-2px);
+        .ai-dossier-section {
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid var(--border-dim);
+            border-radius: var(--radius-md);
+            padding: 14px 18px;
         }
 
-        /* Media Queries */
+        .ai-dossier-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #fca5a5;
+            margin-bottom: 6px;
+        }
+
+        .ai-dossier-text {
+            color: var(--text-secondary);
+            font-size: 0.86rem;
+            line-height: 1.65;
+        }
+
         @media (max-width: 1024px) {
-            .stats-strip, .how-strip { grid-template-columns: repeat(2, 1fr); }
-            .spotlight-card { grid-template-columns: 1fr; }
+            .range-hero { grid-template-columns: 1fr; }
+            .ai-lab-grid { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 640px) {
-            .stats-strip, .how-strip, .lab-grid { grid-template-columns: 1fr; }
-            .hero-title { font-size: 2.2rem; }
+            .telemetry-stats-grid { grid-template-columns: 1fr; }
+            .page-shell { padding: 80px 16px 3rem; }
         }
     </style>
 </head>
@@ -3568,11 +3656,10 @@ document.addEventListener('keydown',function(e){
                 <li><a href="<?= esc($labBasePath) ?>about-home.php" style="font-weight: bold;">About</a></li>
                 <li><a href="<?= esc($labBasePath) ?>contact-home.php" style="font-weight: bold;">Contact</a></li>
                 <li><a href="<?= esc($labBasePath) ?>swa-lab.php" style="font-weight: bold;">Lab</a></li>
-                <li><a href="<?= esc($labBasePath) ?>owasp-2026-landing.php" class="active" style="font-weight: bold;">OWASP 2026 challanges</a></li>
+                <li><a href="<?= esc($labBasePath) ?>owasp-2026-lab.php" class="active" style="font-weight: bold;">OWASP 2026 Lab</a></li>
             </ul>
 
             <div style="display:flex;align-items:center;gap:0.75rem;">
-                <!-- <span id="navProgress" style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-muted);letter-spacing:0.08em;white-space:nowrap;padding:0.3rem 0.75rem;border:1px solid var(--border);border-radius:4px;">0 / 10 COMPLETED</span> -->
                 <a href="<?= esc($labBasePath) ?>owasp-2026-logout.php" class="nav-cta">
                     <i class="fas fa-right-from-bracket"></i>
                     Exit Lab
@@ -3584,90 +3671,82 @@ document.addEventListener('keydown',function(e){
     <main class="page-shell">
 
         <?php if (!$dedicatedMode): ?>
-        <!-- SECTION 1: HERO SECTION -->
-        <section class="hero-section">
-            <div class="hero-badge">
-                <i class="fa-solid fa-terminal"></i> OWASP 2026 &nbsp;·&nbsp; AGENTIC AI SECURITY LABS
+        <!-- TOP HUD HERO & TELEMETRY -->
+        <section class="range-hero">
+            <div class="hero-title-group">
+                <span class="hero-eyebrow">
+                    <i class="fa-solid fa-brain"></i> AGENTIC AI SECURITY RANGE · OWASP 2026
+                </span>
+                <h1 class="hero-title">OWASP 2026 AI LABS</h1>
+                <p class="hero-desc">
+                    Enterprise AI Agent defense range spanning the complete OWASP 2026 Agentic AI threat landscape. Exploit prompt injections, MCP supply chains, and autonomous goal hijacking in full interactive sandbox environments.
+                </p>
             </div>
-            <h1 class="hero-title">OWASP 2026 AI Vulnerabilities<span class="cursor"></span></h1>
-            <p class="hero-desc">
-                Explore ten challenge labs spanning the complete OWASP 2026 Agentic AI risk landscape. Sharpen your skills against real attack techniques including prompt injection, tool exploitation, privilege abuse, and remote code execution, no setup required
-            </p>
-            
-            
-        </section>
 
-        <!-- SECTION 2: STATS & CREDIBILITY STRIP -->
-        <!-- <section class="stats-strip">
-            <div class="stat-card">
-                <span class="stat-num">10</span>
-                <span class="stat-label">Interactive AI Labs</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-num">03</span>
-                <span class="stat-label">Difficulty Levels (Easy / Med / Hard)</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-num">100%</span>
-                <span class="stat-label">Browser-Simulated (Client-Side)</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-num">OWASP</span>
-                <span class="stat-label">2026 Category Alignment</span>
-            </div>
-        </section> -->
+            <!-- Telemetry Card -->
+            <div class="telemetry-card">
+                <div class="telemetry-stats-grid">
+                    <div class="t-stat">
+                        <span class="t-stat-label">AI WORKSPACES</span>
+                        <span class="t-stat-val">10</span>
+                    </div>
+                    <div class="t-stat">
+                        <span class="t-stat-label">COMPLETED</span>
+                        <span class="t-stat-val highlight" id="aiSolvedCount">0</span>
+                    </div>
+                    <div class="t-stat">
+                        <span class="t-stat-label">PTS POOL</span>
+                        <span class="t-stat-val">5,000</span>
+                    </div>
+                </div>
 
-        <!-- SECTION 3: INTRO / HOW IT WORKS STRIP -->
-        <section class="how-strip">
-            <div class="how-card">
-                <div class="how-num">01</div>
-                <div class="how-title">Select Challenge</div>
-                <div class="how-desc">Choose from 10 vulnerability workspaces covering the OWASP 2026 Top 10 risks.</div>
-            </div>
-            <div class="how-card">
-                <div class="how-num">02</div>
-                <div class="how-title">Read Briefing</div>
-                <div class="how-desc">Inspect target application architecture, active safeguards, and vulnerability vectors.</div>
-            </div>
-            <div class="how-card">
-                <div class="how-num">03</div>
-                <div class="how-title">Execute Exploit</div>
-                <div class="how-desc">Attempt prompt injections, RCE commands, or inter-agent message tampering.</div>
-            </div>
-            <div class="how-card">
-                <div class="how-num">04</div>
-                <div class="how-title">Capture Flag</div>
-                <div class="how-desc">Trigger the security boundary condition and capture the TryHackMe challenge flag.</div>
+                <div class="telemetry-progress-wrap">
+                    <div class="progress-header">
+                        <span>AI Range Mastery</span>
+                        <span id="aiProgressPct">0%</span>
+                    </div>
+                    <div class="progress-bar-track">
+                        <div class="progress-bar-fill" id="aiProgressBar"></div>
+                    </div>
+                </div>
             </div>
         </section>
 
-        
-
-        <!-- SECTION 5: FULL LAB GRID -->
-        <section class="section-header" id="labGrid">
-            <div>
-                <h2 class="section-title">All Challenge Workspaces</h2>
-                <p class="section-sub">Select a self-contained browser simulation to practice exploitation & defensive mitigation.</p>
+        <!-- Search and Filters -->
+        <!-- <div class="range-controls">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="aiSearch" class="search-input" placeholder="Search AI lab, prompt injection, RCE, MCP..." oninput="filterAiLabs()">
             </div>
-        </section>
 
-        <section class="lab-grid" aria-label="OWASP 2026 labs">
+            <div class="filter-pills">
+                <button class="filter-btn active" onclick="setAiFilter('ALL', this)">ALL (10)</button>
+                <button class="filter-btn" onclick="setAiFilter('EASY', this)">EASY</button>
+                <button class="filter-btn" onclick="setAiFilter('MEDIUM', this)">MEDIUM</button>
+                <button class="filter-btn" onclick="setAiFilter('HARD', this)">HARD</button>
+                <button class="filter-btn" onclick="setAiFilter('PROMPT', this)">PROMPT INJECTION</button>
+                <button class="filter-btn" onclick="setAiFilter('SUPPLY', this)">SUPPLY CHAIN</button>
+            </div>
+        </div> -->
+
+        <!-- 10 Next-Gen AI Challenge Cards Grid -->
+        <section class="ai-lab-grid" id="aiLabGrid" aria-label="OWASP 2026 AI Agent Labs">
             <?php
                 $diffMap = [
                     'asi01'=>'Easy', 'asi02'=>'Medium', 'asi03'=>'Medium', 'asi04'=>'Hard', 'asi05'=>'Hard',
                     'asi06'=>'Hard', 'asi07'=>'Medium', 'asi08'=>'Easy', 'asi09'=>'Easy', 'asi10'=>'Medium'
                 ];
                 $tagsMap = [
-                    'asi01'=>['Prompt Injection', 'Goal Hijack'],
-                    'asi02'=>['Unbounded Tool', 'Mass Operations'],
-                    'asi03'=>['Credential Inheritance', 'IAM Escalation'],
-                    'asi04'=>['MCP Server', 'Supply Chain'],
-                    'asi05'=>['Unsafe Eval', 'RCE Shell'],
-                    'asi06'=>['RAG Database', 'Memory Poison'],
-                    'asi07'=>['Inter-Agent Bus', 'Spoofed Payload'],
-                    'asi08'=>['Workflow Failure', 'Blast Radius'],
-                    'asi09'=>['Authority Bias', 'Human Override'],
-                    'asi10'=>['Agent Controller', 'Goal Drift']
+                    'asi01'=>['Prompt Injection', 'Goal Hijack', 'Planner Drift'],
+                    'asi02'=>['Unbounded Tool', 'Mass Operations', 'Execution Scope'],
+                    'asi03'=>['Credential Inheritance', 'IAM Escalation', 'Session Reuse'],
+                    'asi04'=>['MCP Server', 'Supply Chain', 'Registry Poison'],
+                    'asi05'=>['Unsafe Eval', 'RCE Shell', 'Code Generation'],
+                    'asi06'=>['Vector DB', 'Memory Poison', 'RAG Corruption'],
+                    'asi07'=>['Inter-Agent Bus', 'Spoofed Payload', 'Channel Tamper'],
+                    'asi08'=>['Workflow Failure', 'Blast Radius', 'Retry Storm'],
+                    'asi09'=>['Authority Bias', 'Human Override', 'Social Deception'],
+                    'asi10'=>['Agent Controller', 'Goal Drift', 'Autonomous Loop']
                 ];
                 $realDocMap = [
                     'asi01' => 'https://genai.owasp.org/llmrisk/llm01-prompt-injection/',
@@ -3688,42 +3767,56 @@ document.addEventListener('keydown',function(e){
                     $diffClass = 'diff-' . strtolower($diff);
                     $tags = $tagsMap[$lab['id']] ?? ['Vulnerability', 'Simulation'];
                     $realDocUrl = $realDocMap[$lab['id']] ?? 'https://genai.owasp.org/';
+                    $targetUrl = $labFolderMap[$lab['id']] ?? ('owasp-2026-lab.php?lab=' . esc($lab['id']));
                 ?>
-                <?php $targetUrl = $labFolderMap[$lab['id']] ?? ('owasp-2026-lab.php?lab=' . esc($lab['id'])); ?>
-                <a
-                    href="<?= esc($targetUrl) ?>"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="lab-card"
+                <div
+                    class="ai-lab-card"
                     id="card-<?= esc($lab['id']) ?>"
-                    aria-label="Open <?= esc($lab['code']) ?> – <?= esc($lab['title']) ?>"
+                    data-id="<?= esc($lab['id']) ?>"
+                    data-diff="<?= esc(strtoupper($diff)) ?>"
+                    data-tags="<?= esc(implode(' ', $tags)) ?>"
+                    data-title="<?= esc($lab['title']) ?>"
+                    data-app="<?= esc($lab['appName']) ?>"
                 >
-                    <div class="card-top">
-                        <span class="lab-code"><?= esc($lab['code']) ?></span>
-                        <span class="diff-tag <?= esc($diffClass) ?>"><?= esc($diff) ?></span>
-                    </div>
                     <div>
-                        <h3><?= esc($lab['title']) ?></h3>
-                        <p><?= esc($lab['summary']) ?></p>
-                        <div class="lab-tags">
+                        <!-- <div class="card-top-row">
+                            <span class="ai-code-badge"><?= esc($lab['code']) ?> // AI RISK</span>
+                            <span class="ai-diff-tag <?= esc($diffClass) ?>"><?= esc($diff) ?> LEVEL</span>
+                        </div> -->
+
+                        <!-- <div class="ai-target-app">
+                            <i class="fa-solid fa-microchip"></i> <?= esc($lab['appName']) ?>
+                        </div> -->
+
+                        <h3 class="ai-card-title"><?= esc($lab['title']) ?></h3>
+                        <p class="ai-card-desc"><?= esc($lab['summary']) ?></p>
+
+                        <div class="ai-tags-row">
                             <?php foreach ($tags as $tag): ?>
-                                <span class="lab-tag"><?= esc($tag) ?></span>
+                                <span class="ai-tag-pill"><?= esc($tag) ?></span>
                             <?php endforeach; ?>
                         </div>
                     </div>
-                    <div class="card-bottom">
-                        <div class="card-bottom-main">
-                            <span style="font-size:0.68rem;color:var(--text-muted);font-family:var(--font-mono);"><i class="fa-solid fa-circle" style="font-size:0.5rem;margin-right:0.25rem;color:#22c55e;"></i> READY</span>
-                            <span class="lab-action">
-                                Enter Lab
-                                <i class="fa-solid fa-arrow-right"></i>
+
+                    <div class="card-bottom-actions">
+                        <div class="bottom-status-row">
+                            <span class="ai-status-indicator" data-lab-status="<?= esc($lab['id']) ?>">
+                                <i class="fa-solid fa-circle-notch"></i> AVAILABLE
                             </span>
+                            <a href="<?= esc($targetUrl) ?>" target="_blank" rel="noopener noreferrer" class="btn-launch-ai">
+                                LAUNCH LAB <i class="fa-solid fa-arrow-right"></i>
+                            </a>
                         </div>
-                        <span class="doc-research-link" onclick="event.preventDefault(); event.stopPropagation(); window.open('<?= esc($realDocUrl) ?>', '_blank')" title="Open OWASP & Security Research Reference">
-                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Exploit Research / Documentation
-                        </span>
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn-dossier-link" style="flex:1;" onclick="openAiDossier('<?= esc($lab['id']) ?>')">
+                                <i class="fa-solid fa-file-shield"></i> THREAT INTEL DOSSIER
+                            </button>
+                            <a href="<?= esc($realDocUrl) ?>" target="_blank" rel="noopener noreferrer" class="btn-dossier-link" title="OWASP Research Reference">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
                     </div>
-                </a>
+                </div>
             <?php endforeach; ?>
         </section>
 
@@ -3751,23 +3844,48 @@ document.addEventListener('keydown',function(e){
         </section>
         <?php endif; ?>
 
-        
     </main>
 
-    <!-- FOOTER -->
-    <!-- <footer style="border-top:1px solid rgba(255,255,255,0.08);padding:2.5rem 2rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:0.75rem;margin-top:2rem;">
-        <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);letter-spacing:0.12em;">
-            OWASP 2026 &nbsp;&middot;&nbsp; AGENTIC AI SECURITY LABS &nbsp;&middot;&nbsp; SECURE WORLDZ ACADEMY
+    <!-- AI THREAT INTEL DOSSIER MODAL -->
+    <div class="ai-modal-overlay" id="aiDossierModal" onclick="closeAiModal(event)">
+        <div class="ai-modal-container" onclick="event.stopPropagation()">
+            <div class="ai-modal-header">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span class="ai-code-badge" id="modalAiCode">ASI01</span>
+                    <h3 style="font-family:var(--font-heading);font-size:1.15rem;color:#fff;" id="modalAiTitle">Threat Intelligence</h3>
+                </div>
+                <button class="modal-close-btn" onclick="document.getElementById('aiDossierModal').style.display='none'">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="ai-modal-body">
+                <div class="ai-dossier-section">
+                    <span class="ai-dossier-label"><i class="fa-solid fa-bullseye"></i> MISSION OBJECTIVE</span>
+                    <p class="ai-dossier-text" id="modalAiObjective"></p>
+                </div>
+
+                <div class="ai-dossier-section">
+                    <span class="ai-dossier-label"><i class="fa-solid fa-network-wired"></i> ATTACK SURFACE</span>
+                    <p class="ai-dossier-text" id="modalAiSurface"></p>
+                </div>
+
+                <div class="ai-dossier-section">
+                    <span class="ai-dossier-label"><i class="fa-solid fa-radiation"></i> THREAT IMPACT</span>
+                    <p class="ai-dossier-text" id="modalAiImpact"></p>
+                </div>
+
+                <div class="ai-dossier-section">
+                    <span class="ai-dossier-label"><i class="fa-solid fa-lock"></i> MITIGATION SAFEGUARD</span>
+                    <p class="ai-dossier-text" id="modalAiMitigation"></p>
+                </div>
+
+                <a href="#" id="modalAiLaunchBtn" target="_blank" rel="noopener noreferrer" class="btn-launch-ai" style="width:100%;padding:14px;font-size:0.85rem;">
+                    <i class="fa-solid fa-rocket"></i> INITIALIZE & ENTER AI LAB CONTAINER
+                </a>
+            </div>
         </div>
-        <div style="display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center;">
-            <a href="<?= esc($labBasePath) ?>owasp-2026-lab.php" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--text-muted);text-decoration:none;letter-spacing:0.08em;transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color=''">[ALL LABS]</a>
-            <a href="<?= esc($labBasePath) ?>about-home.php" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--text-muted);text-decoration:none;letter-spacing:0.08em;transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color=''">[ABOUT]</a>
-            <a href="<?= esc($labBasePath) ?>owasp-2026-logout.php" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--text-muted);text-decoration:none;letter-spacing:0.08em;transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color=''">[EXIT LAB]</a>
-        </div>
-        <div style="font-family:var(--font-mono);font-size:0.62rem;color:#333;letter-spacing:0.06em;">
-            All lab exercises run safely client-side in your browser.
-        </div>
-    </footer> -->
+    </div>
 
     <script>
         const LABS = <?= json_encode($labs, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
@@ -3775,21 +3893,47 @@ document.addEventListener('keydown',function(e){
             map[lab.id] = lab;
             return map;
         }, {});
+        const LAB_FOLDER_MAP = <?= json_encode($labFolderMap, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
 
-        // Nav progress counter
-        function updateNavProgress() {
-            var counter = document.getElementById('navProgress');
-            if (!counter) return;
-            var done = 0;
+        function updateAiTelemetry() {
+            let done = 0;
             LABS.forEach(function(lab) {
                 try {
-                    var raw = localStorage.getItem('owasp2026_state_' + lab.id);
-                    if (raw) { var s = JSON.parse(raw); if (s && s.XP) done++; }
+                    const raw = localStorage.getItem('owasp2026_state_' + lab.id);
+                    if (raw) {
+                        const s = JSON.parse(raw);
+                        if (s && s.XP) done++;
+                    }
                 } catch(e) {}
             });
-            counter.textContent = done + ' / 10 COMPLETED';
+
+            const pct = Math.round((done / LABS.length) * 100);
+            const countEl = document.getElementById('aiSolvedCount');
+            const pctEl = document.getElementById('aiProgressPct');
+            const barEl = document.getElementById('aiProgressBar');
+
+            if (countEl) countEl.textContent = done;
+            if (pctEl) pctEl.textContent = pct + '%';
+            if (barEl) barEl.style.width = pct + '%';
         }
-        document.addEventListener('DOMContentLoaded', updateNavProgress);
+
+        function updateChallengeStatuses() {
+            document.querySelectorAll('[data-lab-status]').forEach(function (status) {
+                const labId = status.getAttribute('data-lab-status');
+                let completed = false;
+                try {
+                    const raw = localStorage.getItem('owasp2026_state_' + labId);
+                    const state = raw ? JSON.parse(raw) : null;
+                    completed = Boolean(state && state.XP);
+                } catch (ignore) {}
+
+                if (!completed) return;
+                status.classList.add('is-completed');
+                status.innerHTML = '<i class="fa-solid fa-circle-check" style="color:#10b981;"></i> COMPLETED';
+                const card = status.closest('.ai-lab-card');
+                if (card) card.classList.add('is-completed');
+            });
+        }
 
         const REGISTRY_COMPONENTS = [
             {

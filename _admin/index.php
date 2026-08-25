@@ -1269,6 +1269,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     Student Management
                 </button>
             <?php endif; ?>
+            <a href="owasp-2026-requests.php" class="nav-link">
+                <i class="fas fa-shield-halved"></i>
+                OWASP 2026 Request
+            </a>
 
             <div class="nav-section-title" style="margin-top: 30px;">Account</div>
             <a href="?logout=true" class="nav-link">

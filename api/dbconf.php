@@ -530,7 +530,7 @@ class DBconfig {
     public function ensurePaymentVerificationsTable() {
         $sql = "CREATE TABLE IF NOT EXISTS `payment_verifications` (
             `id` INT AUTO_INCREMENT PRIMARY KEY,
-            `user_id` VARCHAR(50) NOT NULL,
+            `user_id` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
             `screenshot_path` VARCHAR(255) NOT NULL,
             `payment_method` VARCHAR(100) NOT NULL,
             `status` ENUM('pending', 'accepted', 'declined') DEFAULT 'pending',
@@ -540,8 +540,9 @@ class DBconfig {
             `reviewed_by_admin_id` VARCHAR(100) NULL,
             INDEX (`user_id`),
             INDEX (`status`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
-        @$this->con->query($sql);
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
+        $this->con->query($sql);
+        @$this->con->query("ALTER TABLE `payment_verifications` MODIFY `user_id` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL");
     }
 
     public function getPaymentVerificationByUser($userId) {
@@ -567,6 +568,9 @@ class DBconfig {
         }
         $stmt->bind_param("sss", $userId, $paymentMethod, $screenshotPath);
         $result = $stmt->execute();
+        if (!$result) {
+            error_log("submitPaymentVerification execute failed for user_id=" . var_export($userId, true) . " method=" . var_export($paymentMethod, true) . " path=" . var_export($screenshotPath, true) . " error=" . $stmt->error);
+        }
         $stmt->close();
         return $result;
     }
@@ -575,7 +579,7 @@ class DBconfig {
         $this->ensurePaymentVerificationsTable();
         $sql = "SELECT pv.*, u.name as user_name, u.email as user_email, u.phone as user_phone 
                 FROM payment_verifications pv 
-                LEFT JOIN users u ON pv.user_id = u.id 
+                LEFT JOIN users u ON pv.user_id COLLATE utf8mb4_general_ci = u.id COLLATE utf8mb4_general_ci 
                 ORDER BY pv.id DESC";
         $res = $this->con->query($sql);
         $list = [];

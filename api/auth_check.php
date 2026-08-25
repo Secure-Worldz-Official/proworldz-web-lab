@@ -12,6 +12,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Authenticated pages contain user-specific state. Never allow a stale cached
+// response to leave a user behind a loading overlay or display another session.
+header('Cache-Control: private, no-store, max-age=0, must-revalidate');
+header('Pragma: no-cache');
+
 if (!isset($_SESSION['id'])) {
     header("Location: login.php");
     exit();

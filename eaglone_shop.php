@@ -111,6 +111,7 @@ $yourAvatars = $purchasedAvatars;
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="api/includes/loading_resilience.js?v=20260822" defer></script>
 <script src="api/includes/presence_realtime.js?v=20260320c" defer></script>
 <style>
         * {
@@ -543,7 +544,7 @@ $yourAvatars = $purchasedAvatars;
                         </div>
                     <?php else: ?>
                         <?php foreach ($yourAvatars as $ownedName): 
-                            $img = isset($avatarImageMap[$ownedName]) ? $avatarImageMap[$ownedName] : 'image.png';
+                            $img = isset($avatarImageMap[$ownedName]) ? $avatarImageMap[$ownedName] : 'image.webp';
                         ?>
                         <div class="avatar-card">
                             <div class="avatar-thumb-wrap">
@@ -568,9 +569,7 @@ $yourAvatars = $purchasedAvatars;
     </div>
 </div>
 
-<footer class="footer" style="text-align: center; padding: 2rem; color: var(--muted-foreground); border-top: 1px solid var(--border); margin-top: auto; font-size: 0.875rem;">
-    <p>&copy; 2026 Secure Worldz Academy Ecosystem. All rights reserved.</p>
-</footer>
+
 
 <script>
 // Heartbeat & Online Status

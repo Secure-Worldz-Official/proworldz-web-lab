@@ -42,10 +42,11 @@
             left: 0;
             right: 0;
             z-index: 1000;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-color);
-            transition: var(--transition-smooth);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .navbar.scrolled {
@@ -55,7 +56,7 @@
         }
 
         .nav-container {
-            max-width: var(--container-width);
+            max-width: 1280px;
             margin: 0 auto;
             padding: 1.25rem 2rem;
             display: flex;
@@ -72,28 +73,21 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            transition: var(--transition-fast);
+            transition: all 0.3s ease;
         }
 
         .logo:hover {
             transform: translateY(-2px);
         }
 
+        .logo-img {
+            height: 35px;
+            width: auto;
+            object-fit: contain;
+        }
+
         .logo-accent {
             color: var(--primary-red);
-        }
-
-        .logo-img {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-            filter: brightness(1.2);
-            transition: var(--transition-smooth);
-        }
-
-        .logo:hover .logo-img {
-            transform: rotate(10deg) scale(1.1);
-            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
         }
 
         .nav-links {
@@ -110,7 +104,7 @@
             font-weight: 700;
             letter-spacing: 0.02em;
             position: relative;
-            transition: var(--transition-fast);
+            transition: all 0.3s ease;
         }
 
         .nav-links a::before {
@@ -140,12 +134,12 @@
             gap: 0.5rem;
             padding: 0.75rem 1.75rem;
             background: var(--primary-red);
-            color: var(--dark-bg);
+            color: #fff;
             text-decoration: none;
             font-weight: 600;
             font-size: 0.9rem;
             border-radius: 8px;
-            transition: var(--transition-smooth);
+            transition: var(--transition);
             border: 1px solid transparent;
         }
 
@@ -153,7 +147,7 @@
             background: var(--primary-red-hover);
             box-shadow: var(--shadow-glow);
             transform: translateY(-2px);
-            color: var(--dark-bg);
+            color: #fff;
         }
 
         .menu-toggle {
@@ -162,28 +156,16 @@
             gap: 5px;
             cursor: pointer;
             padding: 0.5rem;
-            z-index: 1001;
             background: none;
             border: none;
+            z-index: 1001;
         }
 
         .menu-toggle span {
             width: 24px;
             height: 2px;
             background: var(--text-primary);
-            transition: var(--transition-fast);
-        }
-
-        .menu-toggle.active span:nth-child(1) {
-            transform: rotate(45deg) translate(6px, 6px);
-        }
-
-        .menu-toggle.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .menu-toggle.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -6px);
+            transition: all 0.3s ease;
         }
 
         /* ── HERO ── */
@@ -608,6 +590,13 @@
             height: auto;
         }
 
+        /* iOS Safari fix */
+        @supports (-webkit-touch-callout: none) {
+            .nav-links {
+                padding-top: 120px;
+            }
+        }
+
         body, h1, h2, h3, h4, h5, h6, p, span, div, li, a {
             font-weight: 700 !important;
         }
@@ -637,7 +626,7 @@
             <li><a href="about-home.php">About</a></li>
             <li><a href="contact-home.php">Contact</a></li>
             <li><a href="swa-lab.php" class="active">Lab</a></li>
-            <li><a href="owasp-2026-landing.php">OWASP 2026 challanges</a></li>
+            <li><a href="owasp-2026-landing.php">OWASP 2026 Lab</a></li>
         </ul>
 
         <a href="login.php" class="nav-cta">

@@ -95,6 +95,7 @@ $_SESSION['welcome_shown'] = true;
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="app-theme-overrides.css?v=20260817">
+    <script src="api/includes/loading_resilience.js?v=20260822" defer></script>
     <script src="api/includes/presence_realtime.js?v=20260320c" defer></script>
     <style>
         

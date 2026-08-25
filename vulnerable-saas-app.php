@@ -1,6 +1,11 @@
 <?php
 require_once 'api/auth_check.php';
 
+// The feature is intentionally unavailable while its training content is reviewed.
+// Preserve this file for future re-enablement, but never run its feature logic.
+header('Location: dashboard.php', true, 302);
+exit();
+
 $courseKey = strtolower(preg_replace("/[^a-z0-9]/i", "", (string)($course ?? "")));
 if ($courseKey !== "securex") {
     header("Location: dashboard.php");

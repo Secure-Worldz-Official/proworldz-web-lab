@@ -61,6 +61,14 @@
         background: rgba(180, 180, 180, 0.7);
     }
 
+    .nav-item.nav-item-disabled {
+        color: var(--muted-fg);
+        cursor: not-allowed;
+        opacity: 0.48;
+        filter: grayscale(1);
+        pointer-events: none;
+    }
+
     .card {
         background: var(--card) !important;
         border-radius: var(--radius);
@@ -379,15 +387,15 @@
             <i class="fas fa-network-wired nav-icon"></i>
             <span>Network Lab</span>
         </a>
-        <a href="owasp-lab.php" class="nav-item <?php echo (basename($_SERVER['PHP_SELF']) == 'owasp-lab.php') ? 'active' : ''; ?> ripple-container">
+        <a href="owasp-lab-landing.php" class="nav-item <?php echo (basename($_SERVER['PHP_SELF']) == 'owasp-lab-landing.php') ? 'active' : ''; ?> ripple-container">
             <i class="fas fa-shield-halved nav-icon"></i>
             <span>OWASP Lab</span>
         </a>
         <?php if (isset($course) && strtolower(preg_replace("/[^a-z0-9]/i", "", (string)$course)) === "securex"): ?>
-        <a href="vulnerable-saas-app.php" class="nav-item <?php echo (basename($_SERVER['PHP_SELF']) == 'vulnerable-saas-app.php') ? 'active' : ''; ?> ripple-container">
+        <span class="nav-item nav-item-disabled" aria-disabled="true" title="Vulnerable SaaS App is temporarily unavailable">
             <i class="fas fa-box-open nav-icon"></i>
-            <span>SaaS App</span>
-        </a>
+            <span>SaaS App (Unavailable)</span>
+        </span>
         <?php endif; ?>
         <a href="tasks.php" class="nav-item <?php echo (basename($_SERVER['PHP_SELF']) == 'tasks.php') ? 'active' : ''; ?> ripple-container">
             <i class="fas fa-tasks nav-icon"></i>
@@ -503,14 +511,14 @@
                     <span>Network Lab</span>
                 </a>
                 <?php if (isset($course) && strtolower(preg_replace("/[^a-z0-9]/i", "", (string)$course)) === "securex"): ?>
-                <a href="owasp-lab.php" class="nav-item">
+                <a href="owasp-lab-landing.php" class="nav-item">
                     <i class="fas fa-shield-halved nav-icon"></i>
                     <span>OWASP Lab</span>
                 </a>
-                <a href="vulnerable-saas-app.php" class="nav-item">
+                <span class="nav-item nav-item-disabled" aria-disabled="true" title="Vulnerable SaaS App is temporarily unavailable">
                     <i class="fas fa-box-open nav-icon"></i>
-                    <span>vulnerable Saas app</span>
-                </a>
+                    <span>Vulnerable SaaS App</span>
+                </span>
                 <?php endif; ?>
                 <a href="tasks.php" class="nav-item">
                     <i class="fas fa-tasks nav-icon"></i>
@@ -532,10 +540,10 @@
                     <i class="fas fa-user-friends nav-icon"></i>
                     <span>Teams</span>
                 </a>
-                <a href="tournament.php" class="nav-item">
+                <!-- <a href="tournament.php" class="nav-item">
                     <i class="fas fa-trophy nav-icon"></i>
                     <span>Tournament</span>
-                </a>
+                </a> -->
             </div>
 
             <div class="nav-label" style="margin-top:0.75rem;">Tools & Support</div>

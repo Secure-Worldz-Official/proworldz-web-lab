@@ -11,6 +11,7 @@ require_once 'api/auth_check.php';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="api/includes/loading_resilience.js?v=20260822" defer></script>
 <script src="api/includes/presence_realtime.js?v=20260320c" defer></script>
 <style>
         /* ===== CSS RESET & BASE ===== */
@@ -1404,6 +1405,10 @@ require_once 'api/auth_check.php';
             gap: 1.5rem;
         }
 
+        .desktop-main > .card:first-child {
+            flex-shrink: 0;
+        }
+
         .lab-card {
             background-color: var(--bg-card, rgba(16, 21, 31, 0.85));
             backdrop-filter: blur(16px);
@@ -1435,10 +1440,10 @@ require_once 'api/auth_check.php';
         }
 
         .lab-img {
-            height: 190px;
+            height: auto;
             overflow: hidden;
             position: relative;
-            background: rgba(0, 0, 0, 0.4);
+            background: linear-gradient(135deg, #0f0f14 0%, #07090e 100%);
         }
 
         .lab-img::after {
@@ -1448,19 +1453,18 @@ require_once 'api/auth_check.php';
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(to bottom, transparent 30%, rgba(7, 9, 14, 0.95) 100%);
+            background: linear-gradient(to bottom, transparent 65%, rgba(7, 9, 14, 0.3) 100%);
         }
 
         .lab-img img {
+            display: block;
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: auto;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             filter: brightness(0.85) contrast(1.05);
         }
 
         .lab-card:hover .lab-img img {
-            transform: scale(1.06);
             filter: brightness(1) contrast(1);
         }
 

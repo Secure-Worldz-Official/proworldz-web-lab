@@ -47,6 +47,7 @@
 
         html {
             scroll-behavior: smooth;
+            scrollbar-gutter: stable;
         }
 
         body {
@@ -55,6 +56,7 @@
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
+            scrollbar-gutter: stable;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
@@ -73,26 +75,58 @@
             top: 0;
             left: 0;
             right: 0;
+            width: 100%;
+            max-width: 100%;
             z-index: 1000;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-color);
             transition: var(--transition-smooth);
+            box-sizing: border-box;
+            overflow: visible;
         }
 
         .navbar.scrolled {
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(0, 0, 0, 0.98);
             border-bottom: 1px solid var(--border-hover);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         .nav-container {
+            width: 100%;
             max-width: var(--container-width);
             margin: 0 auto;
             padding: 1.25rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: nowrap;
+            box-sizing: border-box;
+            overflow: visible;
+        }
+
+        /* Ensure no stray scrollbar ever renders inside the navbar */
+        .navbar,
+        .navbar *,
+        .nav-container,
+        .nav-container *,
+        .nav-links,
+        .nav-links * {
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
+
+        .navbar::-webkit-scrollbar,
+        .navbar *::-webkit-scrollbar,
+        .nav-container::-webkit-scrollbar,
+        .nav-container *::-webkit-scrollbar,
+        .nav-links::-webkit-scrollbar,
+        .nav-links *::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+            background: transparent !important;
         }
 
         .logo {
@@ -105,6 +139,7 @@
             align-items: center;
             gap: 0.5rem;
             transition: var(--transition-fast);
+            flex-shrink: 0;
         }
 
         .logo:hover {
@@ -115,25 +150,37 @@
             color: var(--primary-red);
         }
 
-        .logo-img {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-            filter: brightness(1.2);
-            transition: var(--transition-smooth);
+        .logo-icon {
+            width: 8px;
+            height: 8px;
+            background: var(--primary-red);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--primary-red);
+            animation: pulse-dot 2s infinite;
         }
 
-        .logo:hover .logo-img {
-            transform: rotate(10deg) scale(1.1);
-            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.2); }
         }
 
         .nav-links {
             display: flex;
             list-style: none;
-            gap: 3rem;
+            gap: 2rem;
             align-items: center;
+            margin: 0;
+            padding: 0;
+            flex: 1;
+            justify-content: center;
+            overflow: visible;
+            scrollbar-width: none;
+            min-width: 0;
         }
+
+        .nav-links::-webkit-scrollbar { display: none; }
+
+        .nav-links li { margin: 0; padding: 0; }
 
         .nav-links a {
             color: var(--text-secondary);
@@ -143,6 +190,7 @@
             letter-spacing: 0.02em;
             position: relative;
             transition: var(--transition-fast);
+            white-space: nowrap;
         }
 
         .nav-links a::before {
@@ -172,20 +220,21 @@
             gap: 0.5rem;
             padding: 0.75rem 1.75rem;
             background: var(--primary-red);
-            color: var(--dark-bg);
+            color: #fff;
             text-decoration: none;
             font-weight: 600;
             font-size: 0.9rem;
             border-radius: 8px;
             transition: var(--transition-smooth);
             border: 1px solid transparent;
+            flex-shrink: 0;
         }
 
         .nav-cta:hover {
             background: var(--primary-red-hover);
             box-shadow: var(--shadow-glow);
             transform: translateY(-2px);
-            color: var(--dark-bg);
+            color: #fff;
         }
 
         .menu-toggle {
@@ -194,9 +243,6 @@
             gap: 5px;
             cursor: pointer;
             padding: 0.5rem;
-            z-index: 1001;
-            background: none;
-            border: none;
         }
 
         .menu-toggle span {
@@ -204,18 +250,6 @@
             height: 2px;
             background: var(--text-primary);
             transition: var(--transition-fast);
-        }
-
-        .menu-toggle.active span:nth-child(1) {
-            transform: rotate(45deg) translate(6px, 6px);
-        }
-
-        .menu-toggle.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .menu-toggle.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -6px);
         }
 
         /* ========================================
@@ -1128,7 +1162,7 @@
         }
 
         /* Landscape Mobile Devices */
-        @media (max-height: 600px) and (orientation: landscape) and (max-width: 767px) {
+        @media (max-height: 600px) and (orientation: landscape) {
             .hero {
                 min-height: 120vh;
                 padding: 4rem 2rem;
@@ -1152,7 +1186,7 @@
         }
 
         /* Touch Device Optimizations */
-        @media (hover: none) and (pointer: coarse) and (max-width: 767px) {
+        @media (hover: none) and (pointer: coarse) {
             .btn,
             .course-action,
             .nav-cta,
@@ -1246,6 +1280,70 @@
                 scroll-snap-align: start;
             }
         }
+        .menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+}
+
+.menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+}
+
+/* iOS Safari Fixes */
+@supports (-webkit-touch-callout: none) {
+    .hero {
+        min-height: -webkit-fill-available;
+    }
+    
+    .nav-links {
+        padding-top: 120px;
+    }
+}
+
+/* Prevent horizontal scroll on mobile */
+@media (max-width: 767px) {
+    body {
+        overflow-x: hidden;
+        width: 100%;
+        position: relative;
+    }
+    
+    .navbar {
+        position: fixed;
+        width: 100%;
+    }
+    
+    .hero {
+        padding-top: 80px;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .btn,
+    .course-action,
+    .nav-cta,
+    .social-link,
+    .nav-links a {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .nav-links a {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+    }
+    
+    /* Reduce hover effects on touch devices */
+    .course-card:hover,
+    .feature-card:hover {
+        transform: translateY(-5px);
+    }
+}
 
 /* Fix for images on mobile */
 img {
@@ -1323,6 +1421,7 @@ img {
 
             <ul class="nav-links" id="navLinks">
                 <li><a href="index.php" class="active">Home</a></li>
+                <!-- <li><a href="#courses">Courses</a></li> -->
                 <li><a href="about-home.php">About</a></li>
                 <li><a href="contact-home.php">Contact</a></li>
                 <li><a href="swa-lab.php">Lab</a></li>
@@ -1614,16 +1713,16 @@ img {
          }, { passive: true });
 
         // Parallax effect for hero section
-        window.addEventListener('scroll', () => {
-            const scrolled = window.scrollY;
+        // window.addEventListener('scroll', () => {
+        //     const scrolled = window.scrollY;
             
-            if (heroEl && scrolled < window.innerHeight) {
-                window.requestAnimationFrame(() => {
-                    heroEl.style.transform = `translateY(${scrolled * 0.5}px)`;
-                    heroEl.style.opacity = (1 - (scrolled / window.innerHeight)).toFixed(2);
-                });
-            }
-         }, { passive: true });
+        //     if (heroEl && scrolled < window.innerHeight) {
+        //         window.requestAnimationFrame(() => {
+        //             heroEl.style.transform = `translateY(${scrolled * 0.5}px)`;
+        //             heroEl.style.opacity = (1 - (scrolled / window.innerHeight)).toFixed(2);
+        //         });
+        //     }
+        //  }, { passive: true });
 
         // Counter animation for stats
         const animateCounter = (element, target, duration = 2000) => {

@@ -25,15 +25,20 @@ $accessInfo = $db->getOwasp2026AccessInfo($userId);
 $verification = $db->getPaymentVerificationByUser($userId);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'submit_payment_proof') {
+    error_log("OWASP 2026 payment submission started for user_id: " . var_export($userId, true));
     $paymentMethod = trim($_POST['payment_method'] ?? '');
     if (empty($paymentMethod) || !isset($paymentConfig['methods'][$paymentMethod])) {
+        error_log("OWASP 2026 payment submission failed: invalid payment method '" . var_export($paymentMethod, true) . "'");
         $submissionError = 'Please select a valid payment method.';
     } elseif (!isset($_FILES['screenshot']) || $_FILES['screenshot']['error'] !== UPLOAD_ERR_OK) {
+        $uploadError = $_FILES['screenshot']['error'] ?? 'no_file';
+        error_log("OWASP 2026 payment submission failed: upload error code " . var_export($uploadError, true));
         $submissionError = 'Please choose a payment screenshot image to upload.';
     } else {
         $file = $_FILES['screenshot'];
         $maxSize = 5 * 1024 * 1024;
         if ($file['size'] > $maxSize) {
+            error_log("OWASP 2026 payment submission failed: file size " . $file['size'] . " exceeds limit");
             $submissionError = 'File size exceeds 5MB limit. Please upload a smaller image.';
         } else {
             $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
@@ -45,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'submi
             $allowedMimes = ['image/jpeg', 'image/png', 'image/webp'];
 
             if (!in_array($ext, $allowedExts) || !in_array($mime, $allowedMimes)) {
+                error_log("OWASP 2026 payment submission failed: invalid file type ext=" . var_export($ext, true) . " mime=" . var_export($mime, true));
                 $submissionError = 'Invalid image file type. Please upload a JPG, JPEG, PNG, or WEBP image.';
             } else {
                 $uploadDir = __DIR__ . '/uploads/payment_proofs/';
@@ -56,15 +62,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'submi
                 $relPath = 'uploads/payment_proofs/' . $safeFilename;
 
                 if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+                    error_log("OWASP 2026 payment file uploaded successfully: " . $relPath);
                     $methodName = $paymentConfig['methods'][$paymentMethod]['name'];
                     $saved = $db->submitPaymentVerification($userId, $methodName, $relPath);
                     if ($saved) {
+                        error_log("OWASP 2026 payment verification saved successfully for user_id: " . var_export($userId, true));
                         $submissionSuccess = 'Payment proof submitted successfully! Your submission is now under admin review.';
                         $verification = $db->getPaymentVerificationByUser($userId);
                     } else {
+                        error_log("OWASP 2026 payment submission failed: database insert returned false for user_id: " . var_export($userId, true));
                         $submissionError = 'Failed to save verification record in database. Please try again.';
                     }
                 } else {
+                    error_log("OWASP 2026 payment submission failed: move_uploaded_file failed for user_id: " . var_export($userId, true) . " target=" . $targetPath);
                     $submissionError = 'Failed to save uploaded file on server. Please try again.';
                 }
             }
@@ -683,7 +693,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'submi
                 <li><a href="about-home.php">About</a></li>
                 <li><a href="contact-home.php">Contact</a></li>
                 <li><a href="swa-lab.php">Lab</a></li>
-                <li><a href="owasp-2026-landing.php" class="active">OWASP 2026 challanges</a></li>
+                <li><a href="owasp-2026-landing.php" class="active">OWASP 2026 Lab</a></li>
             </ul>
 
             <a href="logout.php" class="nav-cta" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4);">

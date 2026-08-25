@@ -1,12 +1,3 @@
-
-
-
-
-
-
-
-
-
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap');
 
 :root {
@@ -48,11 +39,12 @@
 html {
     scroll-behavior: smooth !important;
     background-color: var(--bg-main) !important;
+    scrollbar-gutter: stable !important;
 }
 
 html,
 body {
-    max-width: 100vw !important;
+    max-width: 100% !important;
     overflow-x: hidden !important;
     width: 100% !important;
     margin: 0 !important;
@@ -448,7 +440,6 @@ tbody tr:hover td {
     border-color: rgba(255, 42, 47, 0.3) !important;
 }
 
-/* ===== PUBLIC NAVBAR PRESERVATION ===== */
 .navbar {
     position: fixed !important;
     top: 0 !important;
@@ -459,5 +450,9 @@ tbody tr:hover td {
     background: rgba(0, 0, 0, 0.92) !important;
     backdrop-filter: blur(20px) !important;
     border-bottom: 1px solid rgba(255, 42, 47, 0.15) !important;
+}
+
+.nav-container {
+    padding-right: 4rem !important;
 }
 

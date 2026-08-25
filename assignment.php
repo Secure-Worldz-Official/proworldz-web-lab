@@ -3,28 +3,55 @@ require_once 'api/auth_check.php';
 
 $successMessage = '';
 $errorMessage = '';
+$isAsyncSubmission = strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'xmlhttprequest';
+$sendSubmissionResponse = static function (bool $success, string $message, int $status = 200) use ($isAsyncSubmission): void {
+    if (!$isAsyncSubmission) {
+        return;
+    }
+
+    http_response_code($status);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(['success' => $success, 'message' => $message]);
+    exit();
+};
 
 if (isset($_GET['success']) && $_GET['success'] === '1') {
     $successMessage = 'Project submitted successfully! Your project is now under review.';
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_assignment'])) {
-    $assignmentTitle = $_POST['assignmentTitle'] ?? '';
-    $projectLink = $_POST['projectLink'] ?? '';
-    $coins = $_POST['coins'] ?? 0;
+    $assignmentTitle = trim((string) ($_POST['assignmentTitle'] ?? ''));
+    $projectLink = trim((string) ($_POST['projectLink'] ?? ''));
+    $coins = (int) ($_POST['coins'] ?? 0);
     
-    if (!empty($assignmentTitle) && !empty($projectLink)) {
-        $result = $db->upload_waiting_assign($userId, $assignmentTitle, $projectLink, $coins);
-        
-        if ($result !== false) {
-            
-            header("Location: assignment.php?success=1");
-            exit();
+    if (!empty($assignmentTitle) && !empty($projectLink) && filter_var($projectLink, FILTER_VALIDATE_URL)) {
+        $existingAssignments = $db->get_waiting_assign($userId);
+        $alreadySubmitted = false;
+        foreach (is_array($existingAssignments) ? $existingAssignments : [] as $existingAssignment) {
+            if (($existingAssignment['title'] ?? '') === $assignmentTitle) {
+                $alreadySubmitted = true;
+                break;
+            }
+        }
+
+        if ($alreadySubmitted) {
+            $errorMessage = 'This project has already been submitted.';
+            $sendSubmissionResponse(false, $errorMessage, 409);
         } else {
+            $result = $db->upload_waiting_assign($userId, $assignmentTitle, $projectLink, $coins);
+
+            if ($result !== false) {
+                $sendSubmissionResponse(true, 'Project submitted successfully.');
+                header("Location: assignment.php?success=1");
+                exit();
+            }
+
             $errorMessage = "Failed to submit project. Please try again.";
+            $sendSubmissionResponse(false, $errorMessage, 500);
         }
     } else {
-        $errorMessage = "Please fill in all required fields.";
+        $errorMessage = "Please provide a valid project URL.";
+        $sendSubmissionResponse(false, $errorMessage, 422);
     }
 }
 
@@ -85,6 +112,7 @@ if ($course !== "Not enrolled") {
 <title>Projects | Secure Worldz Academy</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="api/includes/loading_resilience.js?v=20260822" defer></script>
 <script src="api/includes/presence_realtime.js?v=20260320c" defer></script>
 <style>
 /* ===== CSS RESET & BASE ===== */
@@ -620,6 +648,24 @@ body.loaded #loader-wrapper {
     transform: translateY(0);
 }
 
+.modal-btn-submit:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.submission-feedback {
+    display: none;
+    margin: 0 1.5rem 1rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(239, 68, 68, 0.45);
+    border-radius: 0.5rem;
+    color: #ff9ca0;
+    background: rgba(239, 68, 68, 0.12);
+    font-size: 0.8rem;
+}
+
+.submission-feedback.visible { display: block; }
+
 /* Hidden form for submission */
 .hidden-form {
     display: none;
@@ -866,7 +912,7 @@ body.loaded #loader-wrapper {
                                     Submitted
                                 </button>
                             <?php else: ?>
-                                <button class="submit-btn" onclick="openSubmitModal('<?php echo addslashes($assignmentTitle); ?>', <?php echo $coins; ?>)">
+                                <button class="submit-btn" onclick="openSubmitModal('<?php echo addslashes($assignmentTitle); ?>', <?php echo $coins; ?>)" disabled>
                                     Submit Project
                                 </button>
                             <?php endif; ?>
@@ -896,6 +942,7 @@ body.loaded #loader-wrapper {
                 required
             >
         </div>
+        <div id="submissionFeedback" class="submission-feedback" role="alert" aria-live="polite"></div>
         <div class="modal-footer">
             <button class="modal-btn modal-btn-cancel" type="button" onclick="closeSubmitModal()">Cancel</button>
             <button class="modal-btn modal-btn-submit" type="button" onclick="submitAssignment()">Submit</button>
@@ -913,24 +960,43 @@ body.loaded #loader-wrapper {
 
 <script>
 let currentAssignmentData = { title: '', coins: 0 };
+let submissionInProgress = false;
+
+function setSubmissionFeedback(message) {
+    const feedback = document.getElementById('submissionFeedback');
+    if (!feedback) return;
+    feedback.textContent = message || '';
+    feedback.classList.toggle('visible', Boolean(message));
+}
+
+function setSubmitButtonState(isSubmitting) {
+    const submitButton = document.querySelector('.modal-btn-submit');
+    if (!submitButton) return;
+    submitButton.disabled = isSubmitting;
+    submitButton.textContent = isSubmitting ? 'Submitting…' : 'Submit';
+}
 
 function openSubmitModal(assignmentTitle, coins) {
+    if (submissionInProgress) return;
     currentAssignmentData = { title: assignmentTitle, coins: coins };
+    setSubmissionFeedback('');
     document.getElementById('submitModal').classList.add('active');
     document.getElementById('projectLink').focus();
     document.getElementById('projectLink').value = '';
 }
 
 function closeSubmitModal() {
+    if (submissionInProgress) return;
     document.getElementById('submitModal').classList.remove('active');
     document.getElementById('projectLink').value = '';
 }
 
-function submitAssignment() {
+async function submitAssignment() {
+    if (submissionInProgress) return;
     const projectLink = document.getElementById('projectLink').value.trim();
     
     if (!projectLink) {
-        alert('Please enter a project link');
+        setSubmissionFeedback('Please enter a project link.');
         return;
     }
     
@@ -938,15 +1004,41 @@ function submitAssignment() {
     try {
         new URL(projectLink);
     } catch (e) {
-        alert('Please enter a valid URL');
+        setSubmissionFeedback('Please enter a valid URL.');
         return;
     }
     
-    // Set form values and submit
+    // Lock immediately, before the request starts, so rapid clicks cannot submit twice.
+    submissionInProgress = true;
+    setSubmitButtonState(true);
+    setSubmissionFeedback('');
+
     document.getElementById('formAssignmentTitle').value = currentAssignmentData.title;
     document.getElementById('formCoins').value = currentAssignmentData.coins;
     document.getElementById('formProjectLink').value = projectLink;
-    document.getElementById('hiddenForm').submit();
+    try {
+        const response = await fetch('assignment.php', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: new FormData(document.getElementById('hiddenForm'))
+        });
+        const result = await response.json().catch(() => null);
+
+        if (!response.ok || !result || !result.success) {
+            throw new Error((result && result.message) || 'Unable to submit the project. Please try again.');
+        }
+
+        window.location.assign('assignment.php?success=1');
+    } catch (error) {
+        submissionInProgress = false;
+        setSubmitButtonState(false);
+        setSubmissionFeedback(error && error.message ? error.message : 'Unable to submit the project. Please try again.');
+        console.error('Assignment submission failed:', error);
+    }
 }
 
 // Close modal when pressing Escape key
@@ -964,10 +1056,6 @@ document.getElementById('submitModal')?.addEventListener('click', function(event
 });
 </script>
 </div>
-
-<footer class="footer" style="text-align: center; padding: 2rem; color: var(--muted-foreground); border-top: 1px solid var(--border); margin-top: auto; font-size: 0.875rem;">
-    <p>&copy; 2026 Secure Worldz Academy Ecosystem. All rights reserved.</p>
-</footer>
 
 <script>
 // Heartbeat & Online Status

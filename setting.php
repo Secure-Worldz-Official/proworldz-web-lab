@@ -617,6 +617,7 @@ require_once 'api/auth_check.php';
 
     </style>
     <link rel="stylesheet" href="app-theme-overrides.css?v=20260817">
+<script src="api/includes/loading_resilience.js?v=20260822" defer></script>
 </head>
 <body>
     <div id="loader-wrapper">

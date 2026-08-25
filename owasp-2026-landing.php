@@ -710,7 +710,7 @@ if ($userId) {
                 <li><a href="about-home.php">About</a></li>
                 <li><a href="contact-home.php">Contact</a></li>
                 <li><a href="swa-lab.php">Lab</a></li>
-                <li><a href="owasp-2026-landing.php" class="active">OWASP 2026 challanges</a></li>
+                <li><a href="owasp-2026-landing.php" class="active">OWASP 2026 Lab</a></li>
             </ul>
 
             <?php if ($userId): ?>

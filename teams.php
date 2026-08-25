@@ -203,6 +203,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'check_notifications') {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="api/includes/loading_resilience.js?v=20260822" defer></script>
 <script src="api/includes/presence_realtime.js?v=20260320c" defer></script>
 <style>
         * {
@@ -938,7 +939,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'check_notifications') {
                             <tr>
                                 <td class="flex items-center gap-3">
                                     <div style="width: 32px; height: 32px; border-radius: 50%; overflow:hidden; background: rgba(255,255,255,0.05); border: 1px solid var(--primary);">
-                                        <img src="api/get_avatar_img.php?name=<?php echo urlencode($u['name']); ?>" style="width:100%; height:100%; object-fit:contain;" onerror="this.src='image.png'">
+                                        <img src="api/get_avatar_img.php?name=<?php echo urlencode($u['name']); ?>" style="width:100%; height:100%; object-fit:contain;" onerror="this.src='image.webp'">
                                     </div>
                                     <span class="font-bold"><?php echo htmlspecialchars($u['name']); ?></span>
                                 </td>
@@ -977,9 +978,9 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'check_notifications') {
 
         // Helper to get avatar for a name
         function getUserAvatar(name) {
-            if (!allUserStats) return 'image.png';
+            if (!allUserStats) return 'image.webp';
             const user = allUserStats.find(u => u.name && u.name.trim() === name.trim());
-            return user && user.avatar ? `api/get_avatar_img.php?name=${encodeURIComponent(user.name)}` : 'image.png';
+            return user && user.avatar ? `api/get_avatar_img.php?name=${encodeURIComponent(user.name)}` : 'image.webp';
         }
 
         function openCreateModal() {
@@ -1360,9 +1361,7 @@ if (isset($_GET['ajax']) && $_GET['ajax'] === 'check_notifications') {
     </script>
 </div>
 
-<footer class="footer" style="text-align: center; padding: 2rem; color: var(--muted-foreground); border-top: 1px solid var(--border); margin-top: auto; font-size: 0.875rem;">
-    <p>&copy; 2026 Secure Worldz Academy Ecosystem. All rights reserved.</p>
-</footer>
+
 
 <script>
 // Heartbeat & Online Status
